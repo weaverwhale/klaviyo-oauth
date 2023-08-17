@@ -45,7 +45,7 @@ export const Lists: React.FC = () => {
   return (
     <LegacyStack vertical>
       <Text variant="bodyMd" as="p">
-        Below will make a <code>FETCH</code> request to the API endpoint{' '}
+        Below will make a <code>GET</code> request to the API endpoint{' '}
         <code>https://a.klaviyo.com/api/lists</code>
       </Text>
 
