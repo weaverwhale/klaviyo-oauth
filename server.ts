@@ -44,6 +44,17 @@ let EXPIRES = 0
 // -----------------------
 // Helpers
 // -----------------------
+const oAuthFlowHeaders = (): any => ({
+  'content-type': 'application/x-www-form-urlencoded',
+  Authorization: `Basic ${CLIENT_ID}:${CLIENT_SECRET}`,
+})
+
+const globalHeaders = (): GlobalHeaders => ({
+  accept: 'application/json',
+  'content-type': 'application/json',
+  Authorization: `Bearer ${TOKEN}`,
+})
+
 const refresh = async (res?: Response) => {
   console.log(chalk.magenta(`[refresh] token re-requested`))
 
@@ -52,10 +63,7 @@ const refresh = async (res?: Response) => {
 
   const options = {
     method: 'POST',
-    headers: {
-      'content-type': 'application/x-www-form-urlencoded',
-      Authorization: `Basic ${CLIENT_ID}:${CLIENT_SECRET}`,
-    },
+    headers: oAuthFlowHeaders(),
     body: querystring.stringify({
       grant_type: 'refresh_token',
       refresh_token: REFRESH_TOKEN,
@@ -95,12 +103,6 @@ const refresh = async (res?: Response) => {
     })
 }
 
-const globalHeaders = (): GlobalHeaders => ({
-  accept: 'application/json',
-  'content-type': 'application/json',
-  Authorization: `Bearer ${TOKEN}`,
-})
-
 const responseChecker = async (response: any) => {
   const currentTime = new Date().getTime() / 1000
 
@@ -134,10 +136,12 @@ app.get('/login', (_req: Request, res: Response) => {
   // Request parameters
   const params = {
     client_id: CLIENT_ID,
-    scope: SCOPE,
     response_type: 'code',
-    state: LOCAL_SECRET,
     redirect_uri: REDIRECT_URI,
+    scope: SCOPE,
+    state: LOCAL_SECRET,
+    code_challenge_method: 'S256',
+    code_challenge: LOCAL_SECRET,
   }
 
   const redirect = `${authUrl}?${querystring.stringify(params)}`
@@ -165,12 +169,13 @@ app.get('/callback', (req: Request, res: Response) => {
     client_secret: CLIENT_SECRET,
     grant_type: 'authorization_code',
     code: code,
+    code_verifier: LOCAL_SECRET,
     redirect_uri: REDIRECT_URI,
   }
 
   const options = {
     method: 'POST',
-    headers: { 'content-type': 'application/x-www-form-urlencoded' },
+    headers: oAuthFlowHeaders(),
     body: querystring.stringify(data),
   }
 
