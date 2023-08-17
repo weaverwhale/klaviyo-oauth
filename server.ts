@@ -31,12 +31,40 @@ const { CLIENT_ID, CLIENT_SECRET, REDIRECT_URI, SHOP_URL, SCOPE, NODE_ENV } =
 
 let LOCAL_TIME = new Date().getTime() / 1000
 
+function generateRandomString(length) {
+  let text = ''
+  let possible =
+    'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
+
+  for (let i = 0; i < length; i++) {
+    text += possible.charAt(Math.floor(Math.random() * possible.length))
+  }
+  return text
+}
+
+async function generateCodeChallenge(codeVerifier) {
+  function base64encode(string) {
+    return btoa(String.fromCharCode.apply(null, new Uint8Array(string)))
+      .replace(/\+/g, '-')
+      .replace(/\//g, '_')
+      .replace(/=+$/, '')
+  }
+
+  const encoder = new TextEncoder()
+  const data = encoder.encode(codeVerifier)
+  const digest = await crypto.subtle.digest('SHA-256', data)
+
+  return base64encode(digest)
+}
+
 const localStorage = new LocalStorage('./scratch')
 let TOKEN = localStorage.getItem('TOKEN') || false
 let REFRESH_TOKEN = localStorage.getItem('REFRESH_TOKEN') || false
 let LOCAL_SECRET = localStorage.getItem('LOCAL_SECRET') || false
+
+let localVerifier = generateRandomString(128)
 if (!LOCAL_SECRET) {
-  LOCAL_SECRET = crypto.randomBytes(20).toString('hex')
+  LOCAL_SECRET = await generateCodeChallenge(localVerifier)
   localStorage.setItem('LOCAL_SECRET', LOCAL_SECRET)
 }
 let EXPIRES = 0
@@ -44,9 +72,9 @@ let EXPIRES = 0
 // -----------------------
 // Helpers
 // -----------------------
-const oAuthFlowHeaders = (): any => ({
+const oAuthFlowHeaders = (): GlobalHeaders => ({
   'content-type': 'application/x-www-form-urlencoded',
-  Authorization: `Basic ${CLIENT_ID}:${CLIENT_SECRET}`,
+  Authorization: `Basic ${btoa(`${CLIENT_ID}:${CLIENT_SECRET}`)}`,
 })
 
 const globalHeaders = (): GlobalHeaders => ({
@@ -139,7 +167,7 @@ app.get('/login', (_req: Request, res: Response) => {
     response_type: 'code',
     redirect_uri: REDIRECT_URI,
     scope: SCOPE,
-    state: LOCAL_SECRET,
+    state: 42,
     code_challenge_method: 'S256',
     code_challenge: LOCAL_SECRET,
   }
@@ -165,11 +193,9 @@ app.get('/callback', (req: Request, res: Response) => {
   const url = 'https://a.klaviyo.com/oauth/token'
 
   const data = {
-    client_id: CLIENT_ID,
-    client_secret: CLIENT_SECRET,
     grant_type: 'authorization_code',
     code: code,
-    code_verifier: LOCAL_SECRET,
+    code_verifier: localVerifier,
     redirect_uri: REDIRECT_URI,
   }
 
@@ -178,6 +204,8 @@ app.get('/callback', (req: Request, res: Response) => {
     headers: oAuthFlowHeaders(),
     body: querystring.stringify(data),
   }
+
+  console.log(options)
 
   fetch(url, options)
     .then((response) => response.json())
