@@ -13,6 +13,9 @@ import { useAuthDispatch } from '../contexts/Auth'
 const Lists = React.lazy(
   async () => await import('./Lists').then((c) => ({ default: c.Lists }))
 )
+const Metrics = React.lazy(
+  async () => await import('./Metrics').then((c) => ({ default: c.Metrics }))
+)
 
 const fallback = (
   <>
@@ -50,6 +53,12 @@ export const TabbedRequests: React.FC<any> = () => {
       content: 'Lists',
       info: 'Lists',
       tabContent: <Lists />,
+    },
+    {
+      id: 'metrics',
+      content: 'Metrics',
+      info: 'Metrics',
+      tabContent: <Metrics />,
     },
   ] as any
 

@@ -3,7 +3,7 @@ import { Spinner, LegacyStack, Text, Card } from '@shopify/polaris'
 import { useAuthDispatch } from '../contexts/Auth'
 import { useToastDispatch } from '../contexts/Toast'
 
-export const Lists: React.FC = () => {
+export const Metrics: React.FC = () => {
   const [loading, setLoading] = useState(false)
   const [listsData, setListsData] = useState([] as any)
 
@@ -13,22 +13,22 @@ export const Lists: React.FC = () => {
   const fetchData = async (): Promise<void> => {
     setLoading(true)
 
-    const lists = await fetch('/get-lists', {
+    const metrics = await fetch('/get-metrics', {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
       },
     }).then((res) => res.json())
 
-    if (lists.errors?.length > 0 && lists.code !== 401) {
-      authDispatch!({ type: 'error', message: lists.message })
-      toastDispatch!({ type: 'error', message: lists.message })
-    } else if (lists.errors?.length > 0 && lists.code !== 200) {
-      authDispatch!({ type: 'expired', message: lists.message })
-      toastDispatch!({ type: 'error', message: lists.message })
+    if (metrics.errors?.length > 0 && metrics.code !== 401) {
+      authDispatch!({ type: 'error', message: metrics.message })
+      toastDispatch!({ type: 'error', message: metrics.message })
+    } else if (metrics.errors?.length > 0 && metrics.code !== 200) {
+      authDispatch!({ type: 'expired', message: metrics.message })
+      toastDispatch!({ type: 'error', message: metrics.message })
     } else {
       authDispatch!({ type: 'success' })
-      setListsData(lists)
+      setListsData(metrics)
     }
 
     setLoading(false)
@@ -44,7 +44,7 @@ export const Lists: React.FC = () => {
     <LegacyStack vertical>
       <Text variant="bodyMd" as="p">
         Below will make a <code>GET</code> request to the API endpoint{' '}
-        <code>https://a.klaviyo.com/api/lists</code>
+        <code>https://a.klaviyo.com/api/metrics</code>
       </Text>
 
       {loading ?? <Spinner accessibilityLabel="Loading orders" size="large" />}
@@ -54,7 +54,11 @@ export const Lists: React.FC = () => {
           {listsData.map((list: any) => (
             <Card key={list.id}>
               <Text variant="bodyLg" as="h3">
-                {list.id}
+                {list.attributes.integration.id} - {list.id}
+              </Text>
+              <Text variant="bodyMd" as="p">
+                {list.attributes.integration.category},{' '}
+                {list.attributes.integration.name},{' '}
               </Text>
               <Text variant="bodyMd" as="p">
                 {list.attributes.name}

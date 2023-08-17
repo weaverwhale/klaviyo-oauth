@@ -281,6 +281,35 @@ app.get('/get-lists', (req: Request, res: Response) => {
   getData()
 })
 
+app.get('/get-metrics', (req: Request, res: Response) => {
+  const url = 'https://a.klaviyo.com/api/metrics'
+
+  let localData: any[] = []
+  async function getData() {
+    const options = {
+      method: 'GET',
+      headers: globalHeaders(),
+    }
+
+    try {
+      await fetch(url, options)
+        .then((response) => response.json())
+        .then(async (response: any) => {
+          console.log(response)
+
+          await responseChecker(response)
+          localData = localData.concat(response.data)
+          res.json(localData)
+        })
+    } catch (err) {
+      console.error(err)
+      res.json(err)
+    }
+  }
+
+  getData()
+})
+
 // -----------------------
 // are we logged in? -- for frontend
 // -----------------------
