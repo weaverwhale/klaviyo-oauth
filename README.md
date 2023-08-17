@@ -94,31 +94,11 @@ Thus we use `node-localstorage` to store JWT data, which you will find under the
 
 - Ensure you are using the correct Node version, v18
 
-- Ensure you are in the correct directory, eg: `<YOUR_PC>/triple-whale-public-apis/examples/node`
+- Ensure you are in the correct directory, eg: `<YOUR_PC>/klaviyo-oauth`
 
 ### "The CLI says I'm missing required data"
 
 - Ensure you have a provided all required data in your `.env` file
-
-### "I cannot complete the oAuth flow"
-
-- Ensure your redirect URL and matches your `.env` file
-
-- Ensure your, Client ID, and Client Secret are correct
-
-### "My API key isn't working"
-
-- Ensure your API key is correct
-
-- Ensure your shop URL is correct
-
-- Ensure you have the correct scope (scopes are wip, so this may not be the issue)
-
-### "I cannot make any requests to the backend"
-
-- Ensure your bearer token has been acquired, is accurate, and is present within your `/scratch` folder (or DB of choice)
-
-- Check steps above
 
 ### "Docker isn't working for me"
 
