@@ -53,15 +53,18 @@ export const Metrics: React.FC = () => {
         <LegacyStack distribution="fillEvenly">
           {listsData.map((list: any) => (
             <Card key={list.id}>
-              <Text variant="bodyLg" as="h3">
+              <Text variant="headingXl" as="h3">
                 {list.attributes.integration.id} - {list.id}
               </Text>
-              <Text variant="bodyMd" as="p">
+              <Text variant="bodyLg" as="p">
                 {list.attributes.integration.category},{' '}
-                {list.attributes.integration.name},{' '}
+                {list.attributes.integration.name}
               </Text>
               <Text variant="bodyMd" as="p">
                 {list.attributes.name}
+              </Text>
+              <Text variant="bodySm" as="p">
+                {list.attributes.updated}
               </Text>
             </Card>
           ))}
