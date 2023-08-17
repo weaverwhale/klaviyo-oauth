@@ -8,14 +8,11 @@ import fetch from 'cross-fetch'
 import { LocalStorage } from 'node-localstorage'
 // import moment from 'moment'
 
-// Types
+// -----------------------
+// types
+// -----------------------
 import { ParsedQs } from 'qs'
-import {
-  oldOrder,
-  oldOrders,
-  ordersWithJourneyOld,
-  GlobalHeaders,
-} from './src/types/Types'
+import { GlobalHeaders } from './src/types/Types'
 
 // -----------------------
 // express app
@@ -107,7 +104,7 @@ const globalHeaders = (): GlobalHeaders => ({
 const responseChecker = async (response: any) => {
   const currentTime = new Date().getTime() / 1000
 
-  // refresh token if we're exires
+  // refresh token if we're exired
   if (currentTime - LOCAL_TIME >= EXPIRES) {
     await refresh()
     LOCAL_TIME = new Date().getTime() / 1000
@@ -122,7 +119,6 @@ const responseChecker = async (response: any) => {
 // -----------------------
 // Check refresh every 10 min
 // -----------------------
-
 setInterval(
   () => CLIENT_ID && CLIENT_SECRET && REFRESH_TOKEN && refresh(),
   600000
@@ -133,7 +129,7 @@ setInterval(
 // -----------------------
 app.get('/login', (_req: Request, res: Response) => {
   // Authorization URL
-  const authUrl = 'https://a.klaviyo.com/oauth/auth'
+  const authUrl = 'https://a.klaviyo.com/oauth/authorize'
 
   // Request parameters
   const params = {
@@ -188,12 +184,17 @@ app.get('/callback', (req: Request, res: Response) => {
         // This is used to refresh this token when it expires
         const refresh = response.refresh_token
 
+        // This is how long the token is good for
+        const expires = response.expires_in
+
         // For local dev, cache token in localStorage
         localStorage.setItem('TOKEN', token)
         localStorage.setItem('REFRESH_TOKEN', refresh)
 
         TOKEN = token
         REFRESH_TOKEN = refresh
+        EXPIRES = expires
+
         console.log(chalk.magenta(`[callback] token acquired`))
 
         res.redirect('/')
@@ -231,8 +232,8 @@ app.get('/get-lists', (req: Request, res: Response) => {
     page: req.body?.page || 0,
   }
 
-  let ordersWithJourneys: oldOrders[] = []
-  async function fetchOrdersWithJourneys() {
+  let localData: any[] = []
+  async function getData() {
     const options = {
       method: 'GET',
       headers: globalHeaders(),
@@ -242,19 +243,15 @@ app.get('/get-lists', (req: Request, res: Response) => {
     try {
       await fetch(url, options)
         .then((response) => response.json())
-        .then(async (response: ordersWithJourneyOld) => {
+        .then(async (response: any) => {
           await responseChecker(response)
-          ordersWithJourneys = ordersWithJourneys.concat(
-            response.ordersWithJourneys?.filter(
-              (order: oldOrder) => order
-            ) as oldOrders
-          )
+          localData = localData.concat(response.body.data)
 
-          if (response.nextPage) {
-            data.page += 1
-            return await fetchOrdersWithJourneys()
+          if (response.body.links?.next) {
+            data.page += response.body.links?.next
+            return await getData()
           } else {
-            res.json(ordersWithJourneys)
+            res.json(localData)
           }
         })
     } catch (err) {
@@ -263,7 +260,7 @@ app.get('/get-lists', (req: Request, res: Response) => {
     }
   }
 
-  fetchOrdersWithJourneys()
+  getData()
 })
 
 // -----------------------
@@ -273,6 +270,9 @@ app.get('/logged-in', (req: Request, res: Response) => {
   res.json({ token: TOKEN })
 })
 
+// -----------------------
+// Logger
+// -----------------------
 const loggy = () => {
   console.log(
     appName +
@@ -290,6 +290,9 @@ const loggy = () => {
   )
 }
 
+// -----------------------
+// Start server
+// -----------------------
 NODE_ENV === 'production' ? app.use(express.static('dist')) : null
 NODE_ENV === 'production'
   ? app.listen('80', loggy)
