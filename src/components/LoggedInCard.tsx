@@ -19,7 +19,7 @@ export const LoggedInCard: React.FC<any> = () => {
   // }
 
   return (
-    <Layout.Section>
+    <Layout.Section fullWidth>
       <Banner status={authenticated ? 'success' : 'critical'}>
         {authenticated ? (
           <LegacyStack vertical>

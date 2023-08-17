@@ -10,8 +10,8 @@ import { useEffect, useState, useCallback } from 'react'
 import { useAuthDispatch } from '../contexts/Auth'
 
 // code splitting
-const Home = React.lazy(
-  async () => await import('./Home').then((c) => ({ default: c.Home }))
+const Lists = React.lazy(
+  async () => await import('./Lists').then((c) => ({ default: c.Lists }))
 )
 
 const fallback = (
@@ -46,10 +46,10 @@ export const TabbedRequests: React.FC<any> = () => {
 
   const tabs = [
     {
-      id: 'home',
-      content: 'Home',
-      info: 'Home',
-      tabContent: <Home />,
+      id: 'lists',
+      content: 'Lists',
+      info: 'Lists',
+      tabContent: <Lists />,
     },
   ] as any
 

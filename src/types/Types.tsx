@@ -348,4 +348,5 @@ export type GlobalHeaders = {
   accept?: string
   'content-type': string
   Authorization?: string
+  revision?: string
 }

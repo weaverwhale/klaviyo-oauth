@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { Banner, Layout, Spinner, LegacyStack } from '@shopify/polaris'
+import { Banner, Layout, Spinner } from '@shopify/polaris'
 import { TabbedRequests } from './TabbedRequests'
 import { LoginCard } from './LoginCard'
 import { LoggedInCard } from './LoggedInCard'
@@ -21,16 +21,16 @@ export const MainSection: React.FC = () => {
   }, [])
 
   return loading ? (
-    <Layout.Section>
+    <Layout.Section fullWidth>
       <Banner>
         <Spinner />
       </Banner>
     </Layout.Section>
   ) : loggedIn && authenticated ? (
-    <LegacyStack vertical>
+    <>
       <LoggedInCard />
       <TabbedRequests />
-    </LegacyStack>
+    </>
   ) : (
     <>
       {loggedIn && <LoggedInCard />}

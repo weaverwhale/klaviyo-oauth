@@ -26,8 +26,7 @@ app.use(express.json())
 // data
 // -----------------------
 dotenv.config()
-const { CLIENT_ID, CLIENT_SECRET, REDIRECT_URI, SHOP_URL, SCOPE, NODE_ENV } =
-  process.env
+const { CLIENT_ID, CLIENT_SECRET, REDIRECT_URI, SCOPE, NODE_ENV } = process.env
 
 let LOCAL_TIME = new Date().getTime() / 1000
 
@@ -80,6 +79,7 @@ const oAuthFlowHeaders = (): GlobalHeaders => ({
 const globalHeaders = (): GlobalHeaders => ({
   accept: 'application/json',
   'content-type': 'application/json',
+  revision: '2023-08-15',
   Authorization: `Bearer ${TOKEN}`,
 })
 
@@ -257,20 +257,11 @@ app.get('/refresh', async (_req: Request, res: Response) => {
 app.get('/get-lists', (req: Request, res: Response) => {
   const url = 'https://a.klaviyo.com/api/lists'
 
-  let data = {
-    shop: SHOP_URL,
-    state: LOCAL_SECRET,
-    startDate: req.body?.startDate || '2022-12-01',
-    endDate: req.body?.endDate || '2022-12-02',
-    page: req.body?.page || 0,
-  }
-
   let localData: any[] = []
   async function getData() {
     const options = {
       method: 'GET',
       headers: globalHeaders(),
-      body: JSON.stringify(data),
     }
 
     try {
@@ -278,14 +269,8 @@ app.get('/get-lists', (req: Request, res: Response) => {
         .then((response) => response.json())
         .then(async (response: any) => {
           await responseChecker(response)
-          localData = localData.concat(response.body.data)
-
-          if (response.body.links?.next) {
-            data.page += response.body.links?.next
-            return await getData()
-          } else {
-            res.json(localData)
-          }
+          localData = localData.concat(response.data)
+          res.json(localData)
         })
     } catch (err) {
       console.error(err)
