@@ -327,8 +327,6 @@ app.get('/get-metrics', (req: Request, res: Response) => {
       await fetch(url, options)
         .then((response) => response.json())
         .then(async (response: any) => {
-          console.log(response)
-
           await responseChecker(response)
           localData = localData.concat(response.data)
           res.json(localData)
@@ -344,6 +342,65 @@ app.get('/get-metrics', (req: Request, res: Response) => {
 
 app.get('/get-metric', (req: Request, res: Response) => {
   const url = 'https://a.klaviyo.com/api/metric'
+  const id = req.query.id
+  if (!id) {
+    res.json({ error: 'no id provided' })
+    return
+  }
+
+  let localData: any[] = []
+  async function getData() {
+    const options = {
+      method: 'GET',
+      headers: globalHeaders(),
+    }
+
+    try {
+      await fetch(`${url}?id=${id}`, options)
+        .then((response) => response.json())
+        .then(async (response: any) => {
+          await responseChecker(response)
+          localData = localData.concat(response.data)
+          res.json(localData)
+        })
+    } catch (err) {
+      console.error(err)
+      res.json(err)
+    }
+  }
+
+  getData()
+})
+
+app.get('/get-profiles', (req: Request, res: Response) => {
+  const url = 'https://a.klaviyo.com/api/profiles'
+
+  let localData: any[] = []
+  async function getData() {
+    const options = {
+      method: 'GET',
+      headers: globalHeaders(),
+    }
+
+    try {
+      await fetch(url, options)
+        .then((response) => response.json())
+        .then(async (response: any) => {
+          await responseChecker(response)
+          localData = localData.concat(response.data)
+          res.json(localData)
+        })
+    } catch (err) {
+      console.error(err)
+      res.json(err)
+    }
+  }
+
+  getData()
+})
+
+app.get('/get-profile', (req: Request, res: Response) => {
+  const url = 'https://a.klaviyo.com/api/profile'
   const id = req.query.id
   if (!id) {
     res.json({ error: 'no id provided' })

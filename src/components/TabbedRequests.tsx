@@ -16,6 +16,9 @@ const Lists = React.lazy(
 const Metrics = React.lazy(
   async () => await import('./Metrics').then((c) => ({ default: c.Metrics }))
 )
+const Profiles = React.lazy(
+  async () => await import('./Profiles').then((c) => ({ default: c.Profiles }))
+)
 
 const fallback = (
   <>
@@ -59,6 +62,12 @@ export const TabbedRequests: React.FC<any> = () => {
       content: 'Metrics',
       info: 'Metrics',
       tabContent: <Metrics />,
+    },
+    {
+      id: 'profiles',
+      content: 'Profiles',
+      info: 'Profiles',
+      tabContent: <Profiles />,
     },
   ] as any
 

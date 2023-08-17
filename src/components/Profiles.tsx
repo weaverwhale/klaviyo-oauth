@@ -3,7 +3,7 @@ import { Spinner, LegacyStack, Text, Card } from '@shopify/polaris'
 import { useAuthDispatch } from '../contexts/Auth'
 import { useToastDispatch } from '../contexts/Toast'
 
-export const Metrics: React.FC = () => {
+export const Profiles: React.FC = () => {
   const [loading, setLoading] = useState(false)
   const [data, setData] = useState([] as any)
 
@@ -13,7 +13,7 @@ export const Metrics: React.FC = () => {
   const fetchData = async (): Promise<void> => {
     setLoading(true)
 
-    const d = await fetch('/get-metrics', {
+    const d = await fetch('/get-profiles', {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -44,7 +44,7 @@ export const Metrics: React.FC = () => {
     <LegacyStack vertical>
       <Text variant="bodyMd" as="p">
         Below will make a <code>GET</code> request to the API endpoint{' '}
-        <code>https://a.klaviyo.com/api/metrics</code>
+        <code>https://a.klaviyo.com/api/profiles</code>
       </Text>
 
       {loading ?? <Spinner accessibilityLabel="Loading orders" size="large" />}
@@ -54,14 +54,13 @@ export const Metrics: React.FC = () => {
           {data.map((d: any) => (
             <Card key={d.id}>
               <Text variant="headingXl" as="h3">
-                {d.attributes.integration.id} - {d.id}
+                {d.attributes.firstname} - {d.attributes.lastname}
               </Text>
               <Text variant="bodyLg" as="p">
-                {d.attributes.integration.category},{' '}
-                {d.attributes.integration.name}
+                {d.attributes.email}
               </Text>
               <Text variant="bodyMd" as="p">
-                {d.attributes.name}
+                {d.attributes.city}, {d.attributes.state}
               </Text>
               <Text variant="bodySm" as="p">
                 {d.attributes.updated}
