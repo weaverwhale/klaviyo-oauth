@@ -281,6 +281,38 @@ app.get('/get-lists', (req: Request, res: Response) => {
   getData()
 })
 
+app.get('/get-list', (req: Request, res: Response) => {
+  const url = 'https://a.klaviyo.com/api/lists'
+  const id = req.query.id
+  if (!id) {
+    res.json({ error: 'no id provided' })
+    return
+  }
+
+  let localData: any[] = []
+  async function getData() {
+    const options = {
+      method: 'GET',
+      headers: globalHeaders(),
+    }
+
+    try {
+      await fetch(`${url}/${id}`, options)
+        .then((response) => response.json())
+        .then(async (response: any) => {
+          await responseChecker(response)
+          localData = localData.concat(response.data)
+          res.json(localData)
+        })
+    } catch (err) {
+      console.error(err)
+      res.json(err)
+    }
+  }
+
+  getData()
+})
+
 app.get('/get-metrics', (req: Request, res: Response) => {
   const url = 'https://a.klaviyo.com/api/metrics'
 
@@ -297,6 +329,38 @@ app.get('/get-metrics', (req: Request, res: Response) => {
         .then(async (response: any) => {
           console.log(response)
 
+          await responseChecker(response)
+          localData = localData.concat(response.data)
+          res.json(localData)
+        })
+    } catch (err) {
+      console.error(err)
+      res.json(err)
+    }
+  }
+
+  getData()
+})
+
+app.get('/get-metric', (req: Request, res: Response) => {
+  const url = 'https://a.klaviyo.com/api/metric'
+  const id = req.query.id
+  if (!id) {
+    res.json({ error: 'no id provided' })
+    return
+  }
+
+  let localData: any[] = []
+  async function getData() {
+    const options = {
+      method: 'GET',
+      headers: globalHeaders(),
+    }
+
+    try {
+      await fetch(`${url}?id=${id}`, options)
+        .then((response) => response.json())
+        .then(async (response: any) => {
           await responseChecker(response)
           localData = localData.concat(response.data)
           res.json(localData)
