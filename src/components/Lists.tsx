@@ -21,13 +21,9 @@ import { DonutPieChart } from './Charts'
 const DataCard: React.FC<any> = ({ data, placeholder }) => {
   return placeholder ? (
     <Card>
-      <Text variant="headingXl" as="h3">
-        <SkeletonDisplayText />
-      </Text>
+      <SkeletonDisplayText />
       <br />
-      <Text variant="bodySm" as="p">
-        <SkeletonBodyText lines={1} />
-      </Text>
+      <SkeletonBodyText lines={1} />
     </Card>
   ) : (
     <Card key={data.id}>

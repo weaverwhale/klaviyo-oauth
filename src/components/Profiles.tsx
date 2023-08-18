@@ -12,13 +12,9 @@ import { useToastDispatch } from '../contexts/Toast'
 const DataCard: React.FC<any> = ({ data, placeholder }) => {
   return placeholder ? (
     <Card>
-      <Text variant="headingXl" as="h3">
-        <SkeletonDisplayText />
-      </Text>
+      <SkeletonDisplayText />
       <br />
-      <Text variant="bodySm" as="p">
-        <SkeletonBodyText />
-      </Text>
+      <SkeletonBodyText lines={1} />
     </Card>
   ) : (
     <Card key={data.id}>
