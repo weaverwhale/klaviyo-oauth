@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { Banner, Layout, Spinner } from '@shopify/polaris'
+import { Banner, Layout } from '@shopify/polaris'
 import { TabbedRequests } from './TabbedRequests'
 import { LoginCard } from './LoginCard'
 import { LoggedInCard } from './LoggedInCard'
@@ -22,9 +22,7 @@ export const MainSection: React.FC = () => {
 
   return loading ? (
     <Layout.Section fullWidth>
-      <Banner>
-        <Spinner />
-      </Banner>
+      <Banner>loading...</Banner>
     </Layout.Section>
   ) : loggedIn && authenticated ? (
     <>
