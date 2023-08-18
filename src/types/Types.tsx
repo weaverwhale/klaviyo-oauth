@@ -206,13 +206,7 @@ export interface donutDataLineItemObject {
   data: donutDataLineItemData[]
 }
 
-export enum donutDataEnum {
-  'firstClick',
-  'lastClick',
-  'lastPlatformClick',
-}
-
-export type donutDataKeys = keyof typeof donutDataEnum
+export type donutDataKeys = any
 
 export type donutDataObject = {
   [key in donutDataKeys]?: donutDataLineItemObject
