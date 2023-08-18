@@ -18,7 +18,6 @@ import { GlobalHeaders } from './src/types/Types'
 // express app
 // -----------------------
 const app = express()
-const port = 3000
 const appName = chalk.hex('#1877f2')('[triple-whale] ')
 app.use(express.json())
 
@@ -26,7 +25,9 @@ app.use(express.json())
 // data
 // -----------------------
 dotenv.config()
-const { CLIENT_ID, CLIENT_SECRET, REDIRECT_URI, SCOPE, NODE_ENV } = process.env
+const { CLIENT_ID, CLIENT_SECRET, REDIRECT_URI, SCOPE, NODE_ENV, PORT } =
+  process.env
+const port = parseInt(PORT ?? '3000')
 
 let LOCAL_TIME = new Date().getTime() / 1000
 
@@ -463,5 +464,5 @@ const loggy = () => {
 // -----------------------
 NODE_ENV === 'production' ? app.use(express.static('dist')) : null
 NODE_ENV === 'production'
-  ? app.listen('80', loggy)
+  ? app.listen(port, loggy)
   : ViteExpress.listen(app, port, loggy)
