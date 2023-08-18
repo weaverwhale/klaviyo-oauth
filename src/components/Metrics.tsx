@@ -3,6 +3,26 @@ import { Spinner, LegacyStack, Text, Card } from '@shopify/polaris'
 import { useAuthDispatch } from '../contexts/Auth'
 import { useToastDispatch } from '../contexts/Toast'
 
+const DataCard: React.FC<any> = ({ data }) => {
+  return (
+    <Card key={data.id}>
+      <Text variant="headingXl" as="h3">
+        {data.attributes.integration.id} - {data.id}
+      </Text>
+      <Text variant="bodyLg" as="p">
+        {data.attributes.integration.category},{' '}
+        {data.attributes.integration.name}
+      </Text>
+      <Text variant="bodyMd" as="p">
+        {data.attributes.name}
+      </Text>
+      <Text variant="bodySm" as="p">
+        {data.attributes.updated}
+      </Text>
+    </Card>
+  )
+}
+
 export const Metrics: React.FC = () => {
   const [loading, setLoading] = useState(false)
   const [data, setData] = useState([] as any)
@@ -47,26 +67,12 @@ export const Metrics: React.FC = () => {
         <code>https://a.klaviyo.com/api/metrics</code>
       </Text>
 
-      {loading ?? <Spinner accessibilityLabel="Loading orders" size="large" />}
+      {loading && <Spinner accessibilityLabel="Loading orders" size="large" />}
 
       {data.length > 0 && (
         <LegacyStack distribution="fillEvenly">
           {data.map((d: any) => (
-            <Card key={d.id}>
-              <Text variant="headingXl" as="h3">
-                {d.attributes.integration.id} - {d.id}
-              </Text>
-              <Text variant="bodyLg" as="p">
-                {d.attributes.integration.category},{' '}
-                {d.attributes.integration.name}
-              </Text>
-              <Text variant="bodyMd" as="p">
-                {d.attributes.name}
-              </Text>
-              <Text variant="bodySm" as="p">
-                {d.attributes.updated}
-              </Text>
-            </Card>
+            <DataCard data={d} />
           ))}
         </LegacyStack>
       )}

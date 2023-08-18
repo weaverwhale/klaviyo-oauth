@@ -3,6 +3,23 @@ import { Spinner, LegacyStack, Text, Card } from '@shopify/polaris'
 import { useAuthDispatch } from '../contexts/Auth'
 import { useToastDispatch } from '../contexts/Toast'
 
+const DataCard: React.FC<any> = ({ data }) => {
+  return (
+    <Card key={data.id}>
+      <Text variant="headingXl" as="h3">
+        {' '}
+        {data.id}
+      </Text>
+      <Text variant="bodyLg" as="p">
+        {data.attributes.name}
+      </Text>
+      <Text variant="bodySm" as="p">
+        {data.attributes.updated}
+      </Text>
+    </Card>
+  )
+}
+
 export const Lists: React.FC = () => {
   const [loading, setLoading] = useState(false)
   const [listsData, setListsData] = useState([] as any)
@@ -47,23 +64,12 @@ export const Lists: React.FC = () => {
         <code>https://a.klaviyo.com/api/lists</code>
       </Text>
 
-      {loading ?? <Spinner accessibilityLabel="Loading orders" size="large" />}
+      {loading && <Spinner accessibilityLabel="Loading orders" size="large" />}
 
       {listsData.length > 0 && (
         <LegacyStack distribution="fillEvenly">
-          {listsData.map((list: any) => (
-            <Card key={list.id}>
-              <Text variant="headingXl" as="h3">
-                {' '}
-                {list.id}
-              </Text>
-              <Text variant="bodyLg" as="p">
-                {list.attributes.name}
-              </Text>
-              <Text variant="bodySm" as="p">
-                {list.attributes.updated}
-              </Text>
-            </Card>
+          {listsData.map((d: any) => (
+            <DataCard data={d} />
           ))}
         </LegacyStack>
       )}

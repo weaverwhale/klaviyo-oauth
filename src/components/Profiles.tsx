@@ -3,6 +3,25 @@ import { Spinner, LegacyStack, Text, Card } from '@shopify/polaris'
 import { useAuthDispatch } from '../contexts/Auth'
 import { useToastDispatch } from '../contexts/Toast'
 
+const DataCard: React.FC<any> = ({ data }) => {
+  return (
+    <Card key={data.id}>
+      <Text variant="headingXl" as="h3">
+        {data.attributes.firstname} - {data.attributes.lastname}
+      </Text>
+      <Text variant="bodyLg" as="p">
+        {data.attributes.email}
+      </Text>
+      <Text variant="bodyMd" as="p">
+        {data.attributes.city}, {data.attributes.state}
+      </Text>
+      <Text variant="bodySm" as="p">
+        {data.attributes.updated}
+      </Text>
+    </Card>
+  )
+}
+
 export const Profiles: React.FC = () => {
   const [loading, setLoading] = useState(false)
   const [data, setData] = useState([] as any)
@@ -47,25 +66,12 @@ export const Profiles: React.FC = () => {
         <code>https://a.klaviyo.com/api/profiles</code>
       </Text>
 
-      {loading ?? <Spinner accessibilityLabel="Loading orders" size="large" />}
+      {loading && <Spinner accessibilityLabel="Loading orders" size="large" />}
 
       {data.length > 0 && (
         <LegacyStack distribution="fillEvenly">
           {data.map((d: any) => (
-            <Card key={d.id}>
-              <Text variant="headingXl" as="h3">
-                {d.attributes.firstname} - {d.attributes.lastname}
-              </Text>
-              <Text variant="bodyLg" as="p">
-                {d.attributes.email}
-              </Text>
-              <Text variant="bodyMd" as="p">
-                {d.attributes.city}, {d.attributes.state}
-              </Text>
-              <Text variant="bodySm" as="p">
-                {d.attributes.updated}
-              </Text>
-            </Card>
+            <DataCard data={d} />
           ))}
         </LegacyStack>
       )}
