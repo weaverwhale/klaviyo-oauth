@@ -81,8 +81,10 @@ export const Lists: React.FC = () => {
 
       <LegacyStack distribution="fillEvenly">
         {loading
-          ? [...Array(3).keys()].map(() => <DataCard placeholder={true} />)
-          : data.map((d: any) => <DataCard data={d} />)}
+          ? [...Array(3).keys()].map((i) => (
+              <DataCard key={i} placeholder={true} />
+            ))
+          : data.map((d: any, i) => <DataCard key={i} data={d} />)}
       </LegacyStack>
     </LegacyStack>
   )
