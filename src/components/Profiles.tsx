@@ -1,10 +1,26 @@
 import { useRef, useState } from 'react'
-import { Spinner, LegacyStack, Text, Card } from '@shopify/polaris'
+import {
+  SkeletonDisplayText,
+  SkeletonBodyText,
+  LegacyStack,
+  Text,
+  Card,
+} from '@shopify/polaris'
 import { useAuthDispatch } from '../contexts/Auth'
 import { useToastDispatch } from '../contexts/Toast'
 
-const DataCard: React.FC<any> = ({ data }) => {
-  return (
+const DataCard: React.FC<any> = ({ data, placeholder }) => {
+  return placeholder ? (
+    <Card>
+      <Text variant="headingXl" as="h3">
+        <SkeletonDisplayText />
+      </Text>
+      <br />
+      <Text variant="bodySm" as="p">
+        <SkeletonBodyText />
+      </Text>
+    </Card>
+  ) : (
     <Card key={data.id}>
       <Text variant="headingXl" as="h3">
         {data.attributes.firstname} - {data.attributes.lastname}
@@ -66,15 +82,11 @@ export const Profiles: React.FC = () => {
         <code>https://a.klaviyo.com/api/profiles</code>
       </Text>
 
-      {loading && <Spinner accessibilityLabel="Loading orders" size="large" />}
-
-      {data.length > 0 && (
-        <LegacyStack distribution="fillEvenly">
-          {data.map((d: any) => (
-            <DataCard data={d} />
-          ))}
-        </LegacyStack>
-      )}
+      <LegacyStack distribution="fillEvenly">
+        {loading
+          ? [...Array(3).keys()].map(() => <DataCard placeholder={true} />)
+          : data.map((d: any) => <DataCard data={d} />)}
+      </LegacyStack>
     </LegacyStack>
   )
 }

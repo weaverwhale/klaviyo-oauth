@@ -1,13 +1,28 @@
 import { useRef, useState } from 'react'
-import { Spinner, LegacyStack, Text, Card } from '@shopify/polaris'
+import {
+  SkeletonDisplayText,
+  SkeletonBodyText,
+  LegacyStack,
+  Text,
+  Card,
+} from '@shopify/polaris'
 import { useAuthDispatch } from '../contexts/Auth'
 import { useToastDispatch } from '../contexts/Toast'
 
-const DataCard: React.FC<any> = ({ data }) => {
-  return (
+const DataCard: React.FC<any> = ({ data, placeholder }) => {
+  return placeholder ? (
+    <Card>
+      <Text variant="headingXl" as="h3">
+        <SkeletonDisplayText />
+      </Text>
+      <br />
+      <Text variant="bodySm" as="p">
+        <SkeletonBodyText lines={1} />
+      </Text>
+    </Card>
+  ) : (
     <Card key={data.id}>
       <Text variant="headingXl" as="h3">
-        {' '}
         {data.id}
       </Text>
       <Text variant="bodyLg" as="p">
@@ -22,7 +37,7 @@ const DataCard: React.FC<any> = ({ data }) => {
 
 export const Lists: React.FC = () => {
   const [loading, setLoading] = useState(false)
-  const [listsData, setListsData] = useState([] as any)
+  const [data, setData] = useState([] as any)
 
   const authDispatch = useAuthDispatch()
   const toastDispatch = useToastDispatch()
@@ -45,7 +60,7 @@ export const Lists: React.FC = () => {
       toastDispatch!({ type: 'error', message: lists.message })
     } else {
       authDispatch!({ type: 'success' })
-      setListsData(lists)
+      setData(lists)
     }
 
     setLoading(false)
@@ -64,15 +79,11 @@ export const Lists: React.FC = () => {
         <code>https://a.klaviyo.com/api/lists</code>
       </Text>
 
-      {loading && <Spinner accessibilityLabel="Loading orders" size="large" />}
-
-      {listsData.length > 0 && (
-        <LegacyStack distribution="fillEvenly">
-          {listsData.map((d: any) => (
-            <DataCard data={d} />
-          ))}
-        </LegacyStack>
-      )}
+      <LegacyStack distribution="fillEvenly">
+        {loading
+          ? [...Array(3).keys()].map(() => <DataCard placeholder={true} />)
+          : data.map((d: any) => <DataCard data={d} />)}
+      </LegacyStack>
     </LegacyStack>
   )
 }
