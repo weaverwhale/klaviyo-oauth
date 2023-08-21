@@ -4,7 +4,7 @@ For documentation on available endpoints and request structure, visit [https://d
 
 ## ⚡ Live demos
 
-WIP
+https://klaviyo-oauth-cgrzlhwaka-uk.a.run.app/
 
 ## 🟡 Prerequesites
 
