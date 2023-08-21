@@ -283,7 +283,7 @@ app.get('/get-lists', (req: Request, res: Response) => {
 })
 
 app.get('/get-list', (req: Request, res: Response) => {
-  const url = 'https://a.klaviyo.com/api/lists'
+  const url = 'https://a.klaviyo.com/api/list'
   const id = req.query.id
   if (!id) {
     res.json({ error: 'no id provided' })
